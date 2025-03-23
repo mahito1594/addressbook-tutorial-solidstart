@@ -1,11 +1,17 @@
-import { A, createAsync, query } from "@solidjs/router";
+import { A, action, createAsync, query } from "@solidjs/router";
 import { For, Show, Suspense } from "solid-js";
-import { getContacts } from "../data";
+import { createEmptyContact, getContacts } from "../data";
 
 export const queryContacts = query(async () => {
   "use server";
   return await getContacts();
 }, "contacts");
+
+const addContact = action(async () => {
+  "use server";
+  const contact = await createEmptyContact();
+  return contact;
+}, "addContact");
 
 const Sidebar = () => {
   const contacts = createAsync(() => queryContacts());
@@ -20,7 +26,7 @@ const Sidebar = () => {
           <input aria-label="Search contacts" id="q" name="q" placeholder="Search" type="search" />
           <div aria-hidden hidden={true} id="search-spinner" />
         </form>
-        <form>
+        <form action={addContact} method="post">
           <button type="submit">New</button>
         </form>
       </div>
