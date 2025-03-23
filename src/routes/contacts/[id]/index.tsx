@@ -1,16 +1,8 @@
-import { createAsync, query, useParams, type RouteDefinition } from "@solidjs/router";
+import { type RouteDefinition, createAsync, query, useParams } from "@solidjs/router";
 import { HttpStatusCode } from "@solidjs/start";
 import { ErrorBoundary, Show } from "solid-js";
 import { type ContactRecord, getContact } from "~/data";
-
-const queryContact = query(async (id: string) => {
-  "use server";
-  const contact = await getContact(id);
-  if (contact == null) {
-    throw new Error("Contact not found");
-  }
-  return contact;
-}, "contactById");
+import { queryContact } from "~/queries/contact";
 
 export const route = {
   preload: ({ params }) => queryContact(params.id),
@@ -52,7 +44,7 @@ const Contact = () => {
           </Show>
 
           <div>
-            <form>
+            <form action={`/contacts/${contact()?.id}/edit`} method="get">
               <button type="submit">Edit</button>
             </form>
 

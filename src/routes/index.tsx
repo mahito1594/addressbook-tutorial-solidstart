@@ -1,5 +1,6 @@
 import type { RouteDefinition } from "@solidjs/router";
-import Sidebar, { queryContacts } from "~/components/Sidebar";
+import Sidebar from "~/components/Sidebar";
+import { queryContacts } from "~/queries/contact";
 
 export const route = {
   preload: () => queryContacts(),

@@ -1,16 +1,12 @@
-import { A, action, createAsync, query } from "@solidjs/router";
+import { A, action, createAsync, query, redirect } from "@solidjs/router";
 import { For, Show, Suspense } from "solid-js";
+import { queryContacts } from "~/queries/contact";
 import { createEmptyContact, getContacts } from "../data";
-
-export const queryContacts = query(async () => {
-  "use server";
-  return await getContacts();
-}, "contacts");
 
 const addContact = action(async () => {
   "use server";
   const contact = await createEmptyContact();
-  return contact;
+  throw redirect(`/contacts/${contact.id}/edit`);
 }, "addContact");
 
 const Sidebar = () => {
