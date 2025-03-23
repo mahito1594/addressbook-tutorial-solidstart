@@ -18,3 +18,6 @@ Solid apps are built with _presets_, which optimise your project for deployment 
 By default, `pnpm run build` will generate a Node app that you can run with `pnpm start`. To use a different preset, add it to the `devDependencies` in `package.json` and specify in your `app.config.js`.
 
 ## This project was created with the [Solid CLI](https://solid-cli.netlify.app)
+
+## Acknowledgement
+This work is based on [remix-run/react-router/tutorials/address-book](https://github.com/remix-run/react-router/tree/cbb711f0daa7d02a8e7ba45af049b933c2c5e211/tutorials/address-book).
