@@ -1,4 +1,4 @@
-import { A, createAsync, useParams, type RouteDefinition } from "@solidjs/router";
+import { A, type RouteDefinition, createAsync, useParams } from "@solidjs/router";
 import { Suspense } from "solid-js";
 import { queryContact } from "~/queries/contact";
 
