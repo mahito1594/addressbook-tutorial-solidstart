@@ -9,13 +9,15 @@
     "dev": "vinxi dev",
     "build": "vinxi build",
     "start": "vinxi start",
-    "version": "vinxi version"
+    "version": "vinxi version",
+    "db:reset": "node reset-db.js"
   },
   "dependencies": {
     "@solidjs/meta": "^0.29.4",
     "@solidjs/router": "^0.15.0",
     "@solidjs/start": "^1.1.0",
     "solid-js": "^1.9.5",
+    "unstorage": "^1.15.0",
     "vinxi": "^0.5.3"
   },
   "engines": {
