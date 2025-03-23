@@ -81,7 +81,8 @@ export const getContacts = async (query?: string) => {
 
 export const createEmptyContact = async () => fackContacts.create({});
 
-export const getContact = async (id: string) => fackContacts.get(id);
+export const getContact = async (id: string) =>
+  new Promise((resolve) => setTimeout(resolve, 200)).then(() => fackContacts.get(id));
 
 export const updatedContact = async (id: string, updates: ContactMutation) =>
   fackContacts.set(id, updates);

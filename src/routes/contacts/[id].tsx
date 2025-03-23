@@ -1,37 +1,41 @@
+import { createAsync, query, useParams, type RouteDefinition } from "@solidjs/router";
 import { Show } from "solid-js";
-import type { ContactRecord } from "~/data";
+import { type ContactRecord, getContact } from "~/data";
+
+const queryContact = query(async (id: string) => {
+  "use server";
+  return await getContact(id);
+}, "contactById");
+
+export const route = {
+  preload: ({ params }) => queryContact(params.id),
+} satisfies RouteDefinition;
 
 const Contact = () => {
-  const contact = {
-    first: "Your",
-    last: "Name",
-    avatar: "https://placecats.com/200/200",
-    twitter: "your_handle",
-    notes: "Some notes about you",
-    favorite: true,
-  };
+  const params = useParams();
+  const contact = createAsync(() => queryContact(params.id));
 
   return (
     <div id="contact">
       <div>
-        <img alt={`${contact.first} ${contact.last} avatar`} src={contact.avatar} />
+        <img alt={`${contact()?.first} ${contact()?.last} avatar`} src={contact()?.avatar} />
       </div>
       <div>
         <h1>
-          <Show when={contact.first || contact.last} fallback={<i>No Name</i>}>
-            {contact.first} {contact.last}
+          <Show when={contact()?.first || contact()?.last} fallback={<i>No Name</i>}>
+            {contact()?.first} {contact()?.last}
           </Show>
-          <Favorite contact={contact} />
+          <Favorite contact={contact() || undefined} />
         </h1>
 
-        <Show when={contact.twitter}>
+        <Show when={contact()?.twitter}>
           <p>
-            <a href={`https://twitter.com/${contact.twitter}`}>{contact.twitter}</a>
+            <a href={`https://twitter.com/${contact()?.twitter}`}>{contact()?.twitter}</a>
           </p>
         </Show>
 
-        <Show when={contact.notes}>
-          <p>{contact.notes}</p>
+        <Show when={contact()?.notes}>
+          <p>{contact()?.notes}</p>
         </Show>
 
         <div>
@@ -54,9 +58,9 @@ const Contact = () => {
 };
 export default Contact;
 
-type FavoriteProps = { contact: Pick<ContactRecord, "favorite"> };
+type FavoriteProps = { contact?: Pick<ContactRecord, "favorite"> };
 const Favorite = (props: FavoriteProps) => {
-  const favorite = () => props.contact.favorite || false;
+  const favorite = () => props.contact?.favorite || false;
 
   return (
     <form>
