@@ -1,10 +1,19 @@
-import { A, type RouteDefinition, createAsync, useParams } from "@solidjs/router";
+import { A, type RouteDefinition, action, createAsync, redirect, useParams } from "@solidjs/router";
 import { Suspense } from "solid-js";
+import { updateContact as serverUpdateContact } from "~/data";
 import { queryContact } from "~/queries/contact";
 
 export const route = {
   preload: ({ params }) => queryContact(params.id),
 } satisfies RouteDefinition;
+
+const updateContact = action(async (contactId: string, formData: FormData) => {
+  "use server";
+  const updates = Object.fromEntries(formData.entries());
+  // TODO: form validation
+  await serverUpdateContact(contactId, updates);
+  throw redirect(`/contacts/${contactId}`);
+}, "updateContact");
 
 const EditContact = () => {
   const params = useParams();
@@ -12,7 +21,7 @@ const EditContact = () => {
 
   return (
     <Suspense fallback="Loading...">
-      <form id="contact-form" method="post">
+      <form id="contact-form" action={updateContact.with(params.id)} method="post">
         <p>
           <span>Name</span>
           <input
