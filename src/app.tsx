@@ -27,7 +27,9 @@ const GlobalLayout = (props: RouteSectionProps) => {
   return (
     <>
       <div id="sidebar">
-        <h1>Solid Start Contacts</h1>
+        <h1>
+          <A href="/about">Solid Start Contacts</A>
+        </h1>
         <div>
           <form id="search-form">
             <input
