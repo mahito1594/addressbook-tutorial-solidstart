@@ -24,7 +24,7 @@ export type ContactRecord = ContactMutation & {
 
 const _storage = createStorage<ContactRecord>({ driver: fsDriver({ base: "./.db" }) });
 
-const fackContacts = {
+const fakeContacts = {
   getAll: async () => {
     const keys = await _storage.keys();
     const result: ContactRecord[] = [];
@@ -70,7 +70,7 @@ const fackContacts = {
 export const getContacts = async (query?: string) => {
   // Simulate a delay - 500ms
   await new Promise((resolve) => setTimeout(resolve, 500));
-  let contacts = await fackContacts.getAll();
+  let contacts = await fakeContacts.getAll();
   if (query) {
     contacts = matchSorter(contacts, query, {
       keys: ["first", "last"],
@@ -87,12 +87,12 @@ export const getContacts = async (query?: string) => {
   });
 };
 
-export const createEmptyContact = async () => fackContacts.create({});
+export const createEmptyContact = () => fakeContacts.create({});
 
-export const getContact = async (id: string) =>
-  new Promise((resolve) => setTimeout(resolve, 200)).then(() => fackContacts.get(id));
+export const getContact = (id: string) =>
+  new Promise((resolve) => setTimeout(resolve, 200)).then(() => fakeContacts.get(id));
 
-export const updateContact = async (id: string, updates: ContactMutation) =>
-  fackContacts.set(id, updates);
+export const updateContact = (id: string, updates: ContactMutation) =>
+  fakeContacts.set(id, updates);
 
-export const deleteContact = (id: string) => fackContacts.destroy(id);
+export const deleteContact = (id: string) => fakeContacts.destroy(id);
