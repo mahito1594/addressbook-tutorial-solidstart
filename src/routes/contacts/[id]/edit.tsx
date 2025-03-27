@@ -1,4 +1,12 @@
-import { A, type RouteDefinition, action, createAsync, redirect, useParams } from "@solidjs/router";
+import {
+  A,
+  type RouteDefinition,
+  action,
+  createAsync,
+  redirect,
+  useNavigate,
+  useParams,
+} from "@solidjs/router";
 import { Suspense } from "solid-js";
 import { updateContact as serverUpdateContact } from "~/data";
 import { queryContact } from "~/queries/contact";
@@ -18,6 +26,7 @@ const updateContact = action(async (contactId: string, formData: FormData) => {
 const EditContact = () => {
   const params = useParams();
   const contact = createAsync(() => queryContact(params.id));
+  const navigate = useNavigate();
 
   return (
     <Suspense fallback="Loading...">
@@ -59,10 +68,8 @@ const EditContact = () => {
         </label>
         <p>
           <button type="submit">Save</button>
-          <button type="button">
-            <A href={`/contacts/${params.id}`} style={{ "text-decoration": "none" }}>
-              Cancel
-            </A>
+          <button onClick={() => navigate("../", { replace: true })} type="button">
+            Cancel
           </button>
         </p>
       </form>
