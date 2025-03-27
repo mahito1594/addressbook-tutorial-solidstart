@@ -1,12 +1,18 @@
-import { type RouteDefinition, createAsync, query, useParams } from "@solidjs/router";
+import { type RouteDefinition, action, createAsync, redirect, useParams } from "@solidjs/router";
 import { HttpStatusCode } from "@solidjs/start";
 import { ErrorBoundary, Show } from "solid-js";
-import { type ContactRecord, getContact } from "~/data";
+import { type ContactRecord, deleteContact } from "~/data";
 import { queryContact } from "~/queries/contact";
 
 export const route = {
   preload: ({ params }) => queryContact(params.id),
 } satisfies RouteDefinition;
+
+const deleteAction = action(async (id: string) => {
+  "use server";
+  await deleteContact(id);
+  throw redirect("/");
+}, "deleteContact");
 
 const Contact = () => {
   const params = useParams();
@@ -49,6 +55,8 @@ const Contact = () => {
             </form>
 
             <form
+              action={deleteAction.with(params.id)}
+              method="post"
               onSubmit={(e) => {
                 const confirmed = confirm("Please confirm you want to delete this record.");
                 if (!confirmed) e.preventDefault();

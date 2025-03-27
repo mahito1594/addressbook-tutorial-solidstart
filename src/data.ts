@@ -63,6 +63,8 @@ const fackContacts = {
     _storage.setItem(id, updatedContact);
     return updatedContact;
   },
+
+  destroy: (id: string) => _storage.removeItem(id),
 };
 
 export const getContacts = async (query?: string) => {
@@ -92,3 +94,5 @@ export const getContact = async (id: string) =>
 
 export const updateContact = async (id: string, updates: ContactMutation) =>
   fackContacts.set(id, updates);
+
+export const deleteContact = (id: string) => fackContacts.destroy(id);
