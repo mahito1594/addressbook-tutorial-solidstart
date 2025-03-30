@@ -1,4 +1,4 @@
-import { A, action, createAsync, redirect, useSearchParams } from "@solidjs/router";
+import { A, action, createAsync, redirect, useIsRouting, useSearchParams } from "@solidjs/router";
 import { For, Show, Suspense } from "solid-js";
 import { queryContacts } from "~/queries/contact";
 import { createEmptyContact } from "../data";
@@ -10,6 +10,7 @@ const addContact = action(async () => {
 }, "addContact");
 
 const Sidebar = () => {
+  const isRouting = useIsRouting();
   const [searchParams, setSearchParams] = useSearchParams<{ q: string }>();
   const contacts = createAsync(() => queryContacts(searchParams.q));
   const contactsLength = () => contacts()?.length || 0;
@@ -24,6 +25,7 @@ const Sidebar = () => {
             aria-label="Search contacts"
             id="q"
             name="q"
+            classList={{ loading: isRouting() }}
             value={searchParams.q || ""}
             placeholder="Search"
             type="search"
