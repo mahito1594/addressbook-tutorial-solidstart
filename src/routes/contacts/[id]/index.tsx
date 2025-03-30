@@ -1,7 +1,7 @@
 import { type RouteDefinition, action, createAsync, redirect, useParams } from "@solidjs/router";
 import { HttpStatusCode } from "@solidjs/start";
 import { ErrorBoundary, Show } from "solid-js";
-import { type ContactRecord, deleteContact } from "~/data";
+import { type ContactRecord, deleteContact, updateContact } from "~/data";
 import { queryContact } from "~/queries/contact";
 
 export const route = {
@@ -13,6 +13,12 @@ const deleteAction = action(async (id: string) => {
   await deleteContact(id);
   throw redirect("/");
 }, "deleteContact");
+
+const favoriteAction = action(async (id: string, formData: FormData) => {
+  "use server";
+  const favorite = formData.get("favorite") === "true";
+  await updateContact(id, { favorite });
+}, "favoriteContact");
 
 const Contact = () => {
   const params = useParams();
@@ -36,7 +42,7 @@ const Contact = () => {
             <Show when={contact()?.first || contact()?.last} fallback={<i>No Name</i>}>
               {contact()?.first} {contact()?.last}
             </Show>
-            <Favorite contact={contact()} />
+            <Show when={contact()}>{(contact) => <Favorite contact={contact()} />}</Show>
           </h1>
 
           <Show when={contact()?.twitter}>
@@ -72,14 +78,14 @@ const Contact = () => {
 };
 export default Contact;
 
-type FavoriteProps = { contact?: Pick<ContactRecord, "favorite"> };
+type FavoriteProps = { contact: Pick<ContactRecord, "id" | "favorite"> };
 const Favorite = (props: FavoriteProps) => {
   const favorite = () => props.contact?.favorite || false;
 
   return (
-    <form>
+    <form action={favoriteAction.with(props.contact?.id)} method="post">
       <button
-        type="button"
+        type="submit"
         aria-label={favorite() ? "Remove from favorites" : "Add to favorites"}
         name="favorite"
         value={favorite() ? "false" : "true"}
