@@ -1,9 +1,9 @@
 import { query } from "@solidjs/router";
 import { getContact, getContacts } from "~/data";
 
-export const queryContacts = query(async () => {
+export const queryContacts = query(async (q?: string) => {
   "use server";
-  return await getContacts();
+  return await getContacts(q);
 }, "contacts");
 
 export const queryContact = query(async (id: string) => {

@@ -1,7 +1,7 @@
-import { A, action, createAsync, query, redirect } from "@solidjs/router";
+import { A, action, createAsync, redirect, useSearchParams } from "@solidjs/router";
 import { For, Show, Suspense } from "solid-js";
 import { queryContacts } from "~/queries/contact";
-import { createEmptyContact, getContacts } from "../data";
+import { createEmptyContact } from "../data";
 
 const addContact = action(async () => {
   "use server";
@@ -10,7 +10,8 @@ const addContact = action(async () => {
 }, "addContact");
 
 const Sidebar = () => {
-  const contacts = createAsync(() => queryContacts());
+  const [searchParams, setSearchParams] = useSearchParams<{ q: string }>();
+  const contacts = createAsync(() => queryContacts(searchParams.q));
   const contactsLength = () => contacts()?.length || 0;
   return (
     <div id="sidebar">
@@ -19,7 +20,15 @@ const Sidebar = () => {
       </h1>
       <div>
         <form id="search-form">
-          <input aria-label="Search contacts" id="q" name="q" placeholder="Search" type="search" />
+          <input
+            aria-label="Search contacts"
+            id="q"
+            name="q"
+            value={searchParams.q || ""}
+            placeholder="Search"
+            type="search"
+            onInput={(ev) => setSearchParams({ q: ev.currentTarget.value })}
+          />
           <div aria-hidden hidden={true} id="search-spinner" />
         </form>
         <form action={addContact} method="post">
