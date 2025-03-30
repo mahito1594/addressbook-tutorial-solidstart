@@ -1,4 +1,11 @@
-import { type RouteDefinition, action, createAsync, redirect, useParams } from "@solidjs/router";
+import {
+  type RouteDefinition,
+  action,
+  createAsync,
+  redirect,
+  useParams,
+  useSubmission,
+} from "@solidjs/router";
 import { HttpStatusCode } from "@solidjs/start";
 import { ErrorBoundary, Show } from "solid-js";
 import { type ContactRecord, deleteContact, updateContact } from "~/data";
@@ -80,7 +87,9 @@ export default Contact;
 
 type FavoriteProps = { contact: Pick<ContactRecord, "id" | "favorite"> };
 const Favorite = (props: FavoriteProps) => {
-  const favorite = () => props.contact?.favorite || false;
+  const submission = useSubmission(favoriteAction);
+  const favorite = () =>
+    submission.pending ? submission.input[1].get("favorite") === "true" : !!props.contact.favorite;
 
   return (
     <form action={favoriteAction.with(props.contact?.id)} method="post">
